@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --navy:#0d1b2a;--navy2:#1b2d42;--navy3:#243548;
+  --accent:#f0a500;--accent2:#e07b00;
+  --bg:#f5f2eb;--white:#fff;--text:#1a1a1a;--muted:#6b6b6b;
+  --green:#1d9e75;--red:#e24b4a;--radius:14px;
+}
+html{font-size:16px;scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.stagger-1{transition-delay:.05s;}.stagger-2{transition-delay:.1s;}.stagger-3{transition-delay:.15s;}.stagger-4{transition-delay:.2s;}
+
+nav{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,0.06);}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--white);cursor:pointer;flex-shrink:0;}
+.logo span{color:var(--accent);}
+.hamburger{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:6px;flex-shrink:0;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:transform .3s,opacity .3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.nav-desktop{display:none;}
+
+.drawer{position:fixed;top:56px;left:0;right:0;background:var(--navy2);z-index:299;transform:translateY(-110%);transition:transform .35s cubic-bezier(.4,0,.2,1);border-bottom:1px solid rgba(255,255,255,0.08);}
+.drawer.open{transform:translateY(0);}
+.drawer a{display:block;padding:1rem 1.5rem;color:rgba(255,255,255,0.8);font-size:1rem;border-bottom:0.5px solid rgba(255,255,255,0.06);cursor:pointer;transition:background .2s,color .2s;}
+.drawer a:last-child{border-bottom:none;}
+.drawer a:active{background:rgba(255,255,255,0.05);color:var(--accent);}
+.drawer-cta{display:block;margin:1rem 1.5rem 1.2rem;background:var(--accent);color:var(--navy)!important;font-family:'Syne',sans-serif;font-weight:700;text-align:center;border-radius:9px;padding:0.85rem!important;border:none!important;}
+
+.page{display:none;}
+.page.active{display:block;animation:pageIn .35s ease;}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.hero{background:var(--navy);padding:3rem 1.25rem 2.5rem;text-align:center;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;}
+.orb{position:absolute;border-radius:50%;filter:blur(55px);opacity:0.15;animation:float 8s ease-in-out infinite;}
+.orb1{width:220px;height:220px;background:var(--accent);top:-60px;left:-60px;}
+.orb2{width:180px;height:180px;background:#5463c8;top:20px;right:-50px;animation-delay:-3s;}
+.orb3{width:150px;height:150px;background:var(--green);bottom:-40px;left:40%;animation-delay:-5s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-18px);}}
+.hero-content{position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(240,165,0,0.12);border:1px solid rgba(240,165,0,0.35);color:var(--accent);font-size:0.72rem;font-weight:500;border-radius:20px;padding:0.3rem 0.9rem;margin-bottom:1.1rem;animation:popIn .6s .2s both;}
+@keyframes popIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1.85rem;color:var(--white);line-height:1.15;margin-bottom:0.9rem;animation:fadeUp .6s .3s both;}
+.hero h1 span{color:var(--accent);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.hero p{color:rgba(255,255,255,0.6);font-size:0.88rem;line-height:1.7;margin-bottom:1rem;animation:fadeUp .6s .4s both;}
+.price-pill{display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(240,165,0,0.45);border-radius:50px;padding:0.65rem 1.2rem;margin-bottom:1.6rem;animation:fadeUp .6s .5s both;flex-wrap:wrap;}
+.price-pill .old{color:rgba(255,255,255,0.38);text-decoration:line-through;font-size:0.8rem;}
+.price-pill .new{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--accent);}
+.price-pill .pill-label{font-size:0.72rem;color:rgba(255,255,255,0.5);line-height:1.35;}
+.divider{width:1px;height:30px;background:rgba(255,255,255,0.12);}
+.hero-btns{display:flex;flex-direction:column;gap:0.75rem;animation:fadeUp .6s .6s both;}
+.btn-primary{background:var(--accent);color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:0.92rem;border:none;border-radius:10px;padding:0.85rem 2rem;cursor:pointer;transition:background .2s,transform .15s;width:100%;min-height:48px;}
+.btn-primary:active{background:var(--accent2);transform:scale(0.97);}
+.btn-ghost{background:transparent;color:var(--white);font-family:'Syne',sans-serif;font-weight:600;font-size:0.92rem;border:1px solid rgba(255,255,255,0.28);border-radius:10px;padding:0.85rem 2rem;cursor:pointer;width:100%;min-height:48px;transition:all .2s;}
+.btn-ghost:active{border-color:var(--accent);color:var(--accent);}
+
+.includes-strip{background:var(--navy2);padding:0.9rem 1.25rem;display:flex;gap:0.6rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,0.06);}
+.includes-strip::-webkit-scrollbar{display:none;}
+.inc-item{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.7);font-size:0.78rem;white-space:nowrap;flex-shrink:0;}
+.inc-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+
+.section{padding:2.5rem 1.25rem;}
+.section-header{margin-bottom:1.8rem;}
+.section-tag{display:inline-block;background:rgba(240,165,0,0.1);color:var(--accent2);font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-radius:20px;padding:0.22rem 0.8rem;margin-bottom:0.6rem;}
+.section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;margin-bottom:0.35rem;line-height:1.25;}
+.section-sub{color:var(--muted);font-size:0.84rem;line-height:1.6;}
+
+.value-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.value-card{background:var(--white);border-radius:var(--radius);border:0.5px solid #e0ddd5;padding:1.1rem;transition:transform .2s;}
+.value-card:active{transform:scale(0.98);}
+.value-icon{font-size:1.3rem;margin-bottom:0.5rem;}
+.value-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;margin-bottom:0.25rem;}
+.value-desc{font-size:0.76rem;color:var(--muted);line-height:1.5;}
+
+.courses-grid{display:flex;flex-direction:column;gap:0.85rem;}
+.course-card{background:var(--white);border-radius:var(--radius);border:0.5px solid #e0ddd5;overflow:hidden;cursor:pointer;transition:transform .2s;}
+.course-card:active{transform:scale(0.99);}
+.course-card.selected{border:2px solid var(--accent);}
+.card-inner{display:flex;align-items:center;gap:1rem;padding:1.1rem;}
+.card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.card-info{flex:1;min-width:0;}
+.card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:0.2rem;}
+.card-desc{font-size:0.76rem;color:var(--muted);line-height:1.45;}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding:0.65rem 1.1rem;border-top:0.5px solid #f0ede5;}
+.badge{font-size:0.68rem;font-weight:500;border-radius:20px;padding:0.22rem 0.65rem;}
+.badge-green{background:#e8f5f0;color:var(--green);}
+.inc-badge{background:rgba(240,165,0,0.1);color:var(--accent2);font-size:0.68rem;font-weight:600;border-radius:20px;padding:0.2rem 0.65rem;}
+.chevron{font-size:0.75rem;color:var(--muted);transition:transform .3s;margin-left:0.5rem;}
+
+.curriculum-panel{display:none;padding:0 1.1rem 1.1rem;}
+.curriculum-panel.open{display:block;animation:panelIn .3s ease;}
+@keyframes panelIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.curr-meta-text{font-size:0.75rem;color:var(--accent2);font-weight:600;margin-bottom:0.85rem;}
+.week-item{background:var(--bg);border-radius:9px;padding:0.8rem 1rem;border-left:3px solid var(--accent);margin-bottom:0.6rem;}
+.week-label{font-size:0.67rem;font-weight:600;color:var(--accent2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:0.25rem;}
+.week-topics{font-size:0.79rem;color:var(--text);line-height:1.5;}
+.curr-enroll{width:100%;margin-top:0.85rem;}
+
+.batch-cards{display:flex;flex-direction:column;gap:0.85rem;}
+.batch-card{background:var(--white);border-radius:var(--radius);border:0.5px solid #e0ddd5;padding:1.1rem 1.2rem;}
+.batch-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;}
+.batch-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;}
+.batch-date{font-size:0.8rem;color:var(--muted);}
+.batch-sched{font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;}
+.seats-row{display:flex;align-items:center;gap:8px;margin-bottom:1rem;}
+.seats-bar{flex:1;height:5px;background:#eee;border-radius:4px;}
+.seats-fill{height:5px;border-radius:4px;background:var(--green);}
+.seats-fill.warn{background:var(--accent);}
+.seats-fill.full{background:var(--red);}
+.seats-text{font-size:0.78rem;font-weight:500;white-space:nowrap;}
+.batch-cta{width:100%;background:var(--navy);color:var(--white);font-family:'Syne',sans-serif;font-weight:600;font-size:0.85rem;border:none;border-radius:9px;padding:0.75rem;cursor:pointer;min-height:44px;transition:background .2s;}
+.batch-cta:active{background:var(--accent);color:var(--navy);}
+.batch-cta:disabled{background:#ccc;cursor:not-allowed;}
+
+.testi-grid{display:flex;flex-direction:column;gap:0.85rem;}
+.testi-card{background:rgba(255,255,255,0.06);border-radius:var(--radius);border:0.5px solid rgba(255,255,255,0.1);padding:1.2rem;}
+.stars{color:var(--accent);font-size:0.85rem;margin-bottom:0.5rem;}
+.testi-text{font-size:0.82rem;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:0.75rem;font-style:italic;}
+.testi-name{font-size:0.78rem;color:rgba(255,255,255,0.42);}
+
+.faq-item{background:var(--white);border-radius:var(--radius);border:0.5px solid #e0ddd5;margin-bottom:0.65rem;overflow:hidden;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;cursor:pointer;font-weight:500;font-size:0.88rem;line-height:1.45;min-height:52px;}
+.faq-icon{font-size:1rem;color:var(--accent);transition:transform .3s;flex-shrink:0;margin-left:0.75rem;}
+.faq-a{font-size:0.82rem;color:var(--muted);line-height:1.65;padding:0 1.2rem;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;}
+.faq-item.open .faq-a{max-height:220px;padding:0 1.2rem 1rem;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+
+.form-card{background:var(--white);border-radius:var(--radius);border:0.5px solid #e0ddd5;padding:1.6rem 1.25rem;max-width:540px;margin:0 auto;}
+.form-card h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:0.25rem;}
+.form-card>p{font-size:0.83rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.55;}
+label{display:block;font-size:0.77rem;font-weight:500;color:var(--muted);margin-bottom:0.3rem;margin-top:1rem;}
+input,select{width:100%;padding:0.72rem 0.9rem;border:0.5px solid #ccc;border-radius:9px;font-size:0.92rem;font-family:'DM Sans',sans-serif;background:var(--bg);outline:none;transition:border .2s;min-height:48px;-webkit-appearance:none;appearance:none;}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(240,165,0,0.1);}
+.bundle-box{background:var(--navy);border-radius:var(--radius);padding:1.2rem;margin-top:1.2rem;border:1px solid rgba(240,165,0,0.3);}
+.bundle-box-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.92rem;color:var(--white);margin-bottom:0.65rem;}
+.bundle-courses{display:flex;flex-wrap:wrap;gap:0.45rem;margin-bottom:0.9rem;}
+.bc-pill{background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.15);border-radius:20px;font-size:0.72rem;color:rgba(255,255,255,0.8);padding:0.26rem 0.7rem;}
+.bundle-price-row{display:flex;justify-content:space-between;align-items:flex-end;}
+.bundle-old{color:rgba(255,255,255,0.35);font-size:0.78rem;text-decoration:line-through;}
+.bundle-new{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--accent);}
+.bundle-note{font-size:0.7rem;color:rgba(255,255,255,0.4);}
+.pay-btn{width:100%;margin-top:1.2rem;padding:0.95rem;font-size:0.95rem;min-height:52px;}
+.success-banner{background:#e8f5f0;border:1px solid #9FE1CB;border-radius:9px;padding:1rem 1.1rem;text-align:center;display:none;margin-top:1rem;}
+.success-banner p{color:var(--green);font-weight:500;font-size:0.86rem;line-height:1.5;}
+
+/* LOCATION SECTION */
+.location-section{background:var(--white);border-radius:var(--radius);border:0.5px solid #e0ddd5;padding:1.3rem;margin-top:1.5rem;}
+.location-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;}
+.loc-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:0.7rem;font-size:0.84rem;color:var(--text);}
+.loc-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+.loc-label{font-size:0.7rem;color:var(--muted);display:block;margin-bottom:1px;}
+.map-btn{width:100%;margin-top:1rem;background:var(--navy);color:var(--white);font-family:'Syne',sans-serif;font-weight:600;font-size:0.85rem;border:none;border-radius:9px;padding:0.75rem;cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;}
+.map-btn:active{background:var(--accent);color:var(--navy);}
+
+footer{background:var(--navy);padding:2rem 1.25rem;text-align:center;}
+footer p{font-size:0.78rem;color:rgba(255,255,255,0.38);line-height:1.8;}
+footer strong{color:rgba(255,255,255,0.6);}
+.footer-loc{color:rgba(255,255,255,0.55);font-size:0.8rem;margin-top:0.4rem;}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,165,0,0.4);}50%{box-shadow:0 0 0 8px rgba(240,165,0,0);}}
+.pulse{animation:pulse 2.2s infinite;}
+
+@media(min-width:640px){
+  nav{padding:0 2rem;height:62px;}
+  .hamburger{display:none;}
+  .nav-desktop{display:flex;align-items:center;gap:1.5rem;}
+  .nav-desktop a{color:rgba(255,255,255,0.65);font-size:0.85rem;text-decoration:none;cursor:pointer;transition:color .2s;position:relative;padding-bottom:2px;}
+  .nav-desktop a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--accent);transition:width .3s;}
+  .nav-desktop a:hover{color:var(--accent);}
+  .nav-desktop a:hover::after{width:100%;}
+  .nav-cta-btn{background:var(--accent);color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;border:none;border-radius:7px;padding:0.48rem 1.2rem;cursor:pointer;transition:background .2s;}
+  .nav-cta-btn:hover{background:var(--accent2);}
+  .hero{padding:5rem 2rem 4rem;}
+  .hero h1{font-size:2.6rem;}
+  .hero p{font-size:1rem;max-width:540px;margin-left:auto;margin-right:auto;}
+  .hero-btns{flex-direction:row;justify-content:center;}
+  .btn-primary,.btn-ghost{width:auto;}
+  .section{padding:3.5rem 2rem;}
+  .section-title{font-size:1.7rem;}
+  .value-grid{grid-template-columns:repeat(4,1fr);}
+  .courses-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .course-card .card-inner{flex-direction:column;align-items:flex-start;padding:1.3rem;}
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+  .batch-cards{display:none;}
+  .batch-table-desktop{display:block;}
+}
+.batch-table-desktop{display:none;}
+.batch-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;border:0.5px solid #e0ddd5;}
+.batch-table th{background:var(--navy);color:var(--white);font-family:'Syne',sans-serif;font-weight:600;font-size:0.78rem;padding:0.85rem 1.1rem;text-align:left;}
+.batch-table td{padding:0.9rem 1.1rem;font-size:0.84rem;border-bottom:0.5px solid #f0ede5;}
+.batch-table tr:last-child td{border-bottom:none;}
+.batch-table tr:hover td{background:#fafaf7;}
+.enroll-mini{background:var(--navy);color:var(--white);font-size:0.75rem;font-weight:500;border:none;border-radius:6px;padding:0.42rem 1rem;cursor:pointer;transition:background .2s;}
+.enroll-mini:hover{background:var(--accent);color:var(--navy);}
+.enroll-mini:disabled{background:#ccc;cursor:not-allowed;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">Data<span>Learn</span></div>
+  <div class="nav-desktop">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('courses')">Courses</a>
+    <a onclick="showPage('batches')">Batches</a>
+    <a onclick="showPage('contact')">Contact</a>
+    <a onclick="showPage('signup')">Enroll</a>
+    <button class="nav-cta-btn pulse" onclick="showPage('signup')">Enroll Now</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="drawer" id="drawer">
+  <a onclick="navTo('home')">Home</a>
+  <a onclick="navTo('courses')">Courses</a>
+  <a onclick="navTo('batches')">Batches</a>
+  <a onclick="navTo('contact')">Contact & Location</a>
+  <a onclick="navTo('signup')">Enroll</a>
+  <a class="drawer-cta" onclick="navTo('signup')">Enroll Now — ₹3,999</a>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-bg">
+      <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">🎓 Weekend Offline Coaching — B KothaKota, Andhra Pradesh</div>
+      <h1>5 In-Demand Courses.<br/><span>One Unbeatable Price.</span></h1>
+      <p>Power BI · SQL · Linux · Data Warehouse · Python — all in a single weekend batch. 30 students max. Real projects. Expert mentors.</p>
+      <div class="price-pill">
+        <div><div class="old">Individually ₹19,995</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.38);">5 courses × ₹3,999</div></div>
+        <div class="divider"></div>
+        <div class="new">₹3,999</div>
+        <div class="divider"></div>
+        <div class="pill-label">All 5 courses<br/>included</div>
+      </div>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('courses')">See What's Included</button>
+        <button class="btn-ghost" onclick="showPage('signup')">Reserve My Seat</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="includes-strip">
+    <div class="inc-item"><div class="inc-dot"></div>Power BI</div>
+    <div class="inc-item"><div class="inc-dot"></div>SQL</div>
+    <div class="inc-item"><div class="inc-dot"></div>Linux</div>
+    <div class="inc-item"><div class="inc-dot"></div>Data Warehouse</div>
+    <div class="inc-item"><div class="inc-dot"></div>Python for Data</div>
+    <div class="inc-item" style="color:var(--accent);font-weight:600;">All for ₹3,999</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header reveal">
+      <div class="section-tag">Why DataLearn</div>
+      <div class="section-title">Everything you need to break into data</div>
+      <div class="section-sub">Affordable, offline-first learning for working professionals in B KothaKota & nearby areas</div>
+    </div>
+    <div class="value-grid">
+      <div class="value-card reveal stagger-1"><div class="value-icon">📦</div><div class="value-title">All 5 Courses in One</div><div class="value-desc">Pay once, learn everything. All bundled in ₹3,999.</div></div>
+      <div class="value-card reveal stagger-2"><div class="value-icon">👥</div><div class="value-title">Small Batch of 30</div><div class="value-desc">Personal attention, live Q&A, real feedback.</div></div>
+      <div class="value-card reveal stagger-3"><div class="value-icon">📅</div><div class="value-title">Weekend-Friendly</div><div class="value-desc">Sat & Sun only — upskill without quitting your job.</div></div>
+      <div class="value-card reveal stagger-4"><div class="value-icon">🏫</div><div class="value-title">Local Coaching</div><div class="value-desc">In-person at B KothaKota — no travel to the city.</div></div>
+    </div>
+  </div>
+
+  <div style="background:var(--navy);padding:2.5rem 1.25rem;">
+    <div class="section-header reveal">
+      <div class="section-tag" style="background:rgba(240,165,0,0.15);">Student Stories</div>
+      <div class="section-title" style="color:var(--white);">What our students say</div>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal stagger-1"><div class="stars">★★★★★</div><div class="testi-text">"5 courses for ₹3,999 is unreal value. I got a data analyst offer within 3 months."</div><div class="testi-name">Aarav S. — Batch 2</div></div>
+      <div class="testi-card reveal stagger-2"><div class="stars">★★★★★</div><div class="testi-text">"Power BI and Data Warehouse taught here is exactly what my company uses. Extremely practical."</div><div class="testi-name">Priya M. — Batch 3</div></div>
+      <div class="testi-card reveal stagger-3"><div class="stars">★★★★★</div><div class="testi-text">"Weekend batches made it possible to upskill while working full-time. Loved the small group."</div><div class="testi-name">Rohit K. — Batch 1</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header reveal">
+      <div class="section-tag">FAQ</div>
+      <div class="section-title">Common questions</div>
+    </div>
+    <div id="faq-list"></div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<div class="page" id="page-courses">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">The Bundle</div>
+      <div class="section-title">All 5 courses — ₹3,999 total</div>
+      <div class="section-sub">Tap any course to see the full week-by-week curriculum</div>
+    </div>
+    <div class="courses-grid" id="courses-grid"></div>
+  </div>
+</div>
+
+<!-- BATCHES -->
+<div class="page" id="page-batches">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Schedule</div>
+      <div class="section-title">Upcoming weekend batches</div>
+      <div class="section-sub">B KothaKota centre · Sat & Sun · All 5 courses included</div>
+    </div>
+    <div class="batch-cards" id="batch-cards"></div>
+    <div class="batch-table-desktop">
+      <table class="batch-table">
+        <thead><tr><th>Batch</th><th>Start Date</th><th>Schedule</th><th>Seats</th><th>Courses</th><th>Fee</th><th></th></tr></thead>
+        <tbody id="batch-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="page-contact">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Find Us</div>
+      <div class="section-title">Our location</div>
+      <div class="section-sub">Come visit us at our coaching centre in B KothaKota</div>
+    </div>
+    <div class="location-section reveal">
+      <div class="location-title">📍 DataLearn Coaching Centre</div>
+      <div class="loc-row"><span class="loc-icon">🏠</span><div><span class="loc-label">Address</span>B KothaKota, Andhra Pradesh — 517370</div></div>
+      <div class="loc-row"><span class="loc-icon">📅</span><div><span class="loc-label">Classes</span>Saturday & Sunday (Weekend batches only)</div></div>
+      <div class="loc-row"><span class="loc-icon">👥</span><div><span class="loc-label">Batch size</span>Maximum 30 students per batch</div></div>
+      <div class="loc-row"><span class="loc-icon">💰</span><div><span class="loc-label">Fee</span>₹3,999 for all 5 courses (one-time)</div></div>
+      <div class="loc-row"><span class="loc-icon">📞</span><div><span class="loc-label">Contact</span>Reach out to confirm your batch slot</div></div>
+      <a class="map-btn" href="https://maps.google.com/?q=B+KothaKota+517370+Andhra+Pradesh" target="_blank">
+        🗺️ Open in Google Maps
+      </a>
+    </div>
+
+    <div style="margin-top:1.5rem;" class="reveal">
+      <div class="section-tag">Nearby areas we serve</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;">
+        <span style="background:var(--white);border:0.5px solid #e0ddd5;border-radius:20px;padding:0.3rem 0.85rem;font-size:0.78rem;">B KothaKota</span>
+        <span style="background:var(--white);border:0.5px solid #e0ddd5;border-radius:20px;padding:0.3rem 0.85rem;font-size:0.78rem;">Madanapalle</span>
+        <span style="background:var(--white);border:0.5px solid #e0ddd5;border-radius:20px;padding:0.3rem 0.85rem;font-size:0.78rem;">Chittoor</span>
+        <span style="background:var(--white);border:0.5px solid #e0ddd5;border-radius:20px;padding:0.3rem 0.85rem;font-size:0.78rem;">Tirupati</span>
+        <span style="background:var(--white);border:0.5px solid #e0ddd5;border-radius:20px;padding:0.3rem 0.85rem;font-size:0.78rem;">Nearby villages</span>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;" class="reveal">
+      <button class="btn-primary" onclick="showPage('signup')" style="width:100%;">Reserve My Seat — ₹3,999</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP -->
+<div class="page" id="page-signup">
+  <div class="section">
+    <div class="form-card">
+      <h2>Reserve your seat</h2>
+      <p>One enrollment. All 5 courses. Weekend batches of 30 at B KothaKota. Fill in details to lock in your spot.</p>
+      <label>Full name</label>
+      <input type="text" id="f-name" placeholder="Your full name" autocomplete="name"/>
+      <label>Email address</label>
+      <input type="email" id="f-email" placeholder="you@email.com" autocomplete="email"/>
+      <label>Phone number</label>
+      <input type="tel" id="f-phone" placeholder="+91 9XXXXXXXXX" autocomplete="tel"/>
+      <label>Select batch</label>
+      <select id="f-batch">
+        <option value="">-- Choose a batch --</option>
+        <option>Batch 1 — 10 May 2025 (9 seats left)</option>
+        <option>Batch 2 — 17 May 2025 (3 seats left)</option>
+        <option>Batch 3 — 24 May 2025 (15 seats left)</option>
+        <option>Batch 4 — 7 Jun 2025 (18 seats left)</option>
+      </select>
+      <div class="bundle-box">
+        <div class="bundle-box-title">What's included in your ₹3,999</div>
+        <div class="bundle-courses">
+          <span class="bc-pill">📊 Power BI</span>
+          <span class="bc-pill">🗄️ SQL</span>
+          <span class="bc-pill">🐧 Linux</span>
+          <span class="bc-pill">🏛️ Data Warehouse</span>
+          <span class="bc-pill">🐍 Python for Data</span>
+        </div>
+        <div class="bundle-price-row">
+          <div><div class="bundle-old">Individual value: ₹19,995</div><div class="bundle-note">All 5 courses bundled</div></div>
+          <div style="text-align:right;"><div class="bundle-new">₹3,999</div><div class="bundle-note">one-time fee</div></div>
+        </div>
+      </div>
+      <button class="btn-primary pay-btn pulse" onclick="handlePay()">Pay ₹3,999 & Confirm My Seat</button>
+      <div class="success-banner" id="success-banner">
+        <p>✓ Enrollment confirmed! You'll receive batch details and centre address on your phone/email within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>
+    <strong>DataLearn Coaching Centre</strong><br/>
+    <span class="footer-loc">📍 B KothaKota, Andhra Pradesh — 517370</span><br/>
+    Weekend batches · Offline · Batches of 30 · All 5 courses for ₹3,999
+  </p>
+</footer>
+
+<script>
+const courses=[
+  {id:'powerbi',icon:'📊',color:'#fff3d6',ic:'#b97a00',title:'Power BI',desc:'Turn raw data into interactive dashboards and business reports',weeks:[{l:'Week 1–2',t:'Power BI interface, connecting sources, basic visuals & charts'},{l:'Week 3–4',t:'DAX formulas, calculated columns, measures & KPIs'},{l:'Week 5–6',t:'Advanced charts, slicers, filters & drill-through reports'},{l:'Week 7–8',t:'Publishing to Power BI Service, sharing & scheduling'}],dur:'8 weekends'},
+  {id:'sql',icon:'🗄️',color:'#e8f5f0',ic:'#0f6e56',title:'SQL',desc:'Master databases and write powerful queries to analyse data',weeks:[{l:'Week 1–2',t:'Databases intro, SELECT, WHERE, ORDER BY, LIMIT'},{l:'Week 3–4',t:'JOINs, GROUP BY, HAVING, aggregate functions'},{l:'Week 5–6',t:'Subqueries, CTEs, window functions'},{l:'Week 7–8',t:'Indexing, query optimisation, stored procedures'}],dur:'8 weekends'},
+  {id:'linux',icon:'🐧',color:'#eeedfe',ic:'#534AB7',title:'Linux',desc:'Command-line skills every data professional needs',weeks:[{l:'Week 1–2',t:'Shell basics, navigation, file permissions, users'},{l:'Week 3–4',t:'grep, awk, sed, pipes, redirection'},{l:'Week 5–6',t:'Shell scripting, cron jobs, process management'},{l:'Week 7',t:'Networking basics, SSH, package management'}],dur:'7 weekends'},
+  {id:'dw',icon:'🏛️',color:'#faeeda',ic:'#854F0B',title:'Data Warehouse',desc:'How enterprises store, model and query massive datasets',weeks:[{l:'Week 1–2',t:'OLTP vs OLAP, star & snowflake schema, facts & dims'},{l:'Week 3–4',t:'ETL pipelines, slowly changing dimensions'},{l:'Week 5–6',t:'Data marts, partitioning, query performance'},{l:'Week 7–8',t:'Cloud DW overview: Redshift, BigQuery & Snowflake'}],dur:'8 weekends'},
+  {id:'python',icon:'🐍',color:'#e8f5f0',ic:'#0f6e56',title:'Python for Data',desc:'Python from basics to real data analysis with pandas & numpy',weeks:[{l:'Week 1–2',t:'Python syntax, data types, control flow, functions'},{l:'Week 3–4',t:'NumPy, pandas DataFrames, data cleaning'},{l:'Week 5–6',t:'Visualisation with matplotlib & seaborn'},{l:'Week 7–8',t:'End-to-end real-world data analysis project'}],dur:'8 weekends'},
+];
+
+const batches=[
+  {name:'Batch 1',start:'10 May 2025',sched:'Sat & Sun, 9am–1pm',seats:9,total:30},
+  {name:'Batch 2',start:'17 May 2025',sched:'Sat & Sun, 10am–2pm',seats:3,total:30},
+  {name:'Batch 3',start:'24 May 2025',sched:'Sat & Sun, 9am–1pm',seats:15,total:30},
+  {name:'Batch 4',start:'7 Jun 2025',sched:'Sat & Sun, 10am–2pm',seats:18,total:30},
+];
+
+const faqs=[
+  {q:'Do I get all 5 courses for ₹3,999?',a:'Yes! One payment covers all five courses — Power BI, SQL, Linux, Data Warehouse Concepts, and Python for Data. No hidden charges.'},
+  {q:'Where is the coaching centre?',a:'Our centre is located in B KothaKota, Andhra Pradesh — 517370. Classes are held in-person on Saturday and Sunday.'},
+  {q:'How is the batch structured?',a:'Each batch has a maximum of 30 students. Classes run Saturday and Sunday. Courses run sequentially across weekends.'},
+  {q:'Is this online or offline?',a:'100% offline, in-person coaching at our B KothaKota centre. Hands-on, face-to-face learning.'},
+  {q:'Do I need prior experience?',a:'No prior experience needed. We start from the basics. Basic computer familiarity is sufficient.'},
+  {q:'Will I get a certificate?',a:'Yes — students who complete the programme receive a DataLearn completion certificate covering all 5 courses.'},
+];
+
+let selectedCourse=null;
+
+function buildCourses(){
+  document.getElementById('courses-grid').innerHTML=courses.map(c=>`
+    <div class="course-card reveal" id="card-${c.id}" onclick="toggleCurr('${c.id}')">
+      <div class="card-inner">
+        <div class="card-icon" style="background:${c.color};color:${c.ic};">${c.icon}</div>
+        <div class="card-info">
+          <div class="card-title">${c.title} <span class="chevron" id="chev-${c.id}">▼</span></div>
+          <div class="card-desc">${c.desc}</div>
+        </div>
+      </div>
+      <div class="curriculum-panel" id="curr-${c.id}">
+        <div class="curr-meta-text">Included in ₹3,999 · ${c.dur}</div>
+        ${c.weeks.map(w=>`<div class="week-item"><div class="week-label">${w.l}</div><div class="week-topics">${w.t}</div></div>`).join('')}
+        <button class="btn-primary curr-enroll" onclick="event.stopPropagation();showPage('signup')">Enroll — All 5 Courses for ₹3,999</button>
+      </div>
+      <div class="card-footer">
+        <span class="badge badge-green">${c.dur}</span>
+        <span class="inc-badge">Included</span>
+      </div>
+    </div>`).join('');
+  initReveal();
+}
+
+function toggleCurr(id){
+  const was=selectedCourse===id;
+  courses.forEach(c=>{
+    const panel=document.getElementById('curr-'+c.id);
+    const card=document.getElementById('card-'+c.id);
+    const chev=document.getElementById('chev-'+c.id);
+    if(panel){panel.classList.remove('open');panel.style.display='none';}
+    if(card)card.classList.remove('selected');
+    if(chev)chev.style.transform='rotate(0deg)';
+  });
+  if(!was){
+    selectedCourse=id;
+    const panel=document.getElementById('curr-'+id);
+    const card=document.getElementById('card-'+id);
+    const chev=document.getElementById('chev-'+id);
+    if(panel){panel.style.display='block';panel.classList.add('open');}
+    if(card)card.classList.add('selected');
+    if(chev)chev.style.transform='rotate(180deg)';
+    setTimeout(()=>card&&card.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  } else {selectedCourse=null;}
+}
+
+function buildBatches(){
+  document.getElementById('batch-cards').innerHTML=batches.map(b=>{
+    const filled=b.total-b.seats,pct=Math.round(filled/b.total*100);
+    const cls=b.seats===0?'full':b.seats<6?'warn':'';
+    const seatColor=b.seats===0?'var(--red)':b.seats<6?'var(--accent)':'var(--green)';
+    const dis=b.seats===0?'disabled':'';
+    return`<div class="batch-card reveal">
+      <div class="batch-card-top"><div><div class="batch-name">${b.name}</div><div class="batch-date">${b.start}</div></div><strong>₹3,999</strong></div>
+      <div class="batch-sched">${b.sched} · All 5 courses</div>
+      <div class="seats-row"><div class="seats-bar"><div class="seats-fill ${cls}" style="width:${pct}%"></div></div><span class="seats-text" style="color:${seatColor};">${b.seats===0?'Full':b.seats+' seats left'}</span></div>
+      <button class="batch-cta" ${dis} onclick="showPage('signup')">${b.seats===0?'Batch Full':'Enroll in this Batch'}</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('batch-tbody').innerHTML=batches.map(b=>{
+    const filled=b.total-b.seats,pct=Math.round(filled/b.total*100);
+    const cls=b.seats===0?'full':b.seats<6?'warn':'';
+    const seatColor=b.seats===0?'var(--red)':b.seats<6?'var(--accent)':'var(--green)';
+    const dis=b.seats===0?'disabled':'';
+    return`<tr><td><strong>${b.name}</strong></td><td>${b.start}</td><td style="font-size:0.8rem;color:var(--muted);">${b.sched}</td>
+    <td><div style="display:flex;align-items:center;gap:7px;"><div class="seats-bar" style="width:72px;flex:none;"><div class="seats-fill ${cls}" style="width:${pct}%"></div></div><span style="font-size:0.79rem;color:${seatColor};">${b.seats===0?'Full':b.seats+' left'}</span></div></td>
+    <td style="font-size:0.78rem;color:var(--muted);">All 5 courses</td><td><strong>₹3,999</strong></td>
+    <td><button class="enroll-mini" ${dis} onclick="showPage('signup')">${b.seats===0?'Full':'Enroll'}</button></td></tr>`;
+  }).join('');
+}
+
+function buildFAQ(){
+  document.getElementById('faq-list').innerHTML=faqs.map((f,i)=>`
+    <div class="faq-item reveal" id="faq-${i}">
+      <div class="faq-q" onclick="toggleFaq(${i})">${f.q}<span class="faq-icon">+</span></div>
+      <div class="faq-a">${f.a}</div>
+    </div>`).join('');
+}
+
+function toggleFaq(i){document.getElementById('faq-'+i).classList.toggle('open');}
+
+function toggleDrawer(){
+  const d=document.getElementById('drawer');
+  const h=document.getElementById('hamburger');
+  d.classList.toggle('open');h.classList.toggle('open');
+}
+
+function navTo(page){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  showPage(page);
+}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(initReveal,60);
+}
+
+function handlePay(){
+  const n=document.getElementById('f-name').value.trim();
+  const e=document.getElementById('f-email').value.trim();
+  const p=document.getElementById('f-phone').value.trim();
+  const b=document.getElementById('f-batch').value;
+  if(!n||!e||!p||!b){alert('Please fill in all fields to proceed.');return;}
+  document.getElementById('success-banner').style.display='block';
+  const btn=document.querySelector('.pay-btn');
+  btn.disabled=true;btn.textContent='Seat Confirmed!';btn.style.background='var(--green)';
+  btn.classList.remove('pulse');
+}
+
+function initReveal(){
+  const els=document.querySelectorAll('.reveal:not(.visible)');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+  },{threshold:0.1});
+  els.forEach(el=>obs.observe(el));
+}
+
+buildCourses();buildBatches();buildFAQ();
+setTimeout(initReveal,100);
+</script>
+</body>
+</html>
