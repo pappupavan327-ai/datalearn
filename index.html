@@ -212,6 +212,23 @@ footer p{font-size:0.79rem;color:rgba(255,255,255,0.38);line-height:1.85;}
 footer strong{color:rgba(255,255,255,0.65);}
 .footer-loc{color:rgba(255,255,255,0.5);font-size:0.8rem;display:block;}
 
+.review-form{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.3rem;margin-top:1.5rem;}
+.review-form-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:0.9rem;}
+.rev-input{width:100%;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.18);border-radius:8px;padding:0.65rem 0.9rem;font-size:0.87rem;font-family:'DM Sans',sans-serif;color:var(--white);outline:none;margin-bottom:0.75rem;transition:border .2s;}
+.rev-input::placeholder{color:rgba(255,255,255,0.4);}
+.rev-input:focus{border-color:var(--accent);}
+.rev-textarea{width:100%;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.18);border-radius:8px;padding:0.65rem 0.9rem;font-size:0.87rem;font-family:'DM Sans',sans-serif;color:var(--white);outline:none;min-height:90px;resize:vertical;margin-top:0.75rem;margin-bottom:0.85rem;transition:border .2s;}
+.rev-textarea::placeholder{color:rgba(255,255,255,0.4);}
+.rev-textarea:focus{border-color:var(--accent);}
+.star-picker{display:flex;align-items:center;gap:6px;margin-bottom:0.1rem;}
+.star-picker>span:first-child{font-size:0.78rem;color:rgba(255,255,255,0.55);}
+.star-opt{font-size:1.4rem;color:rgba(255,255,255,0.25);cursor:pointer;transition:color .15s,transform .15s;}
+.star-opt:hover,.star-opt.active{color:var(--accent);}
+.star-opt:hover{transform:scale(1.2);}
+.rev-submit{background:var(--accent);color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;border:none;border-radius:9px;padding:0.72rem 1.6rem;cursor:pointer;min-height:44px;transition:background .2s,transform .15s;position:relative;overflow:hidden;}
+.rev-submit:hover{background:var(--accent2);}
+.rev-submit:active{transform:scale(0.97);}
+.user-review{background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.1rem;margin-bottom:0.75rem;animation:successPop .4s cubic-bezier(.34,1.56,.64,1);}
 .wa-fab{position:fixed;bottom:1.5rem;right:1.25rem;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.45);cursor:pointer;z-index:400;text-decoration:none;animation:waBob 2.8s ease-in-out infinite;}
 @keyframes waBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);box-shadow:0 10px 24px rgba(37,211,102,0.55);}}
 .wa-fab svg{width:28px;height:28px;fill:#fff;}
@@ -347,10 +364,28 @@ footer strong{color:rgba(255,255,255,0.65);}
       <div class="section-tag" style="background:rgba(240,165,0,0.15);">Student Stories</div>
       <div class="section-title" style="color:var(--white);">What our students say</div>
     </div>
-    <div class="testi-grid">
-      <div class="testi-card reveal stagger-1"><div class="stars">★★★★★</div><div class="testi-text">"5 courses for ₹3,999 is unreal value. Got a data analyst offer within 3 months."</div><div class="testi-name">Aarav S. — Batch 2</div></div>
-      <div class="testi-card reveal stagger-2"><div class="stars">★★★★★</div><div class="testi-text">"Power BI and Data Warehouse here is exactly what my company uses. Super practical."</div><div class="testi-name">Priya M. — Batch 3</div></div>
-      <div class="testi-card reveal stagger-3"><div class="stars">★★★★★</div><div class="testi-text">"Weekend batches let me upskill while working full-time. Loved the small group."</div><div class="testi-name">Rohit K. — Batch 1</div></div>
+    <div class="testi-grid" id="testi-grid">
+      <div class="testi-card reveal stagger-1"><div class="stars">★★★★★</div><div class="testi-text">"5 courses for ₹3,999 is incredible value. I landed a data analyst role within 3 months of completing the programme."</div><div class="testi-name">Srikanth — Batch 1, Morning</div></div>
+      <div class="testi-card reveal stagger-2"><div class="stars">★★★★★</div><div class="testi-text">"Power BI and Data Warehouse concepts taught here are exactly what my company uses daily. Very hands-on and practical."</div><div class="testi-name">Nandi — Batch 2, Afternoon</div></div>
+      <div class="testi-card reveal stagger-3"><div class="stars">★★★★</div><div class="testi-text">"Weekend batches made it possible to upskill while working full-time. The SQL and Python sessions were excellent."</div><div class="testi-name">Maruthi — Batch 1, Morning</div></div>
+      <div class="testi-card reveal stagger-4"><div class="stars">★★★★★</div><div class="testi-text">"NPR coaching style is very clear. Linux and shell scripting covered in depth. Strongly recommend to anyone from IT background."</div><div class="testi-name">NPR — Batch 2, Afternoon</div></div>
+    </div>
+
+    <!-- REVIEW FORM -->
+    <div class="review-form reveal" id="review-form-box">
+      <div class="review-form-title">✍️ Write a Review</div>
+      <input type="text" id="rev-name" placeholder="Your name" class="rev-input"/>
+      <div class="star-picker" id="star-picker">
+        <span>Your rating:</span>
+        <span class="star-opt" data-val="1" onclick="setStar(1)">★</span>
+        <span class="star-opt" data-val="2" onclick="setStar(2)">★</span>
+        <span class="star-opt" data-val="3" onclick="setStar(3)">★</span>
+        <span class="star-opt" data-val="4" onclick="setStar(4)">★</span>
+        <span class="star-opt" data-val="5" onclick="setStar(5)">★</span>
+      </div>
+      <textarea id="rev-text" placeholder="Share your experience with DataLearn..." class="rev-textarea"></textarea>
+      <button class="rev-submit ripple-btn" onclick="submitReview()">Submit Review</button>
+      <div id="rev-success" style="display:none;color:var(--green);font-size:0.83rem;margin-top:0.6rem;font-weight:500;">✅ Thank you! Your review has been posted.</div>
     </div>
   </div>
 
@@ -447,10 +482,10 @@ footer strong{color:rgba(255,255,255,0.65);}
       <label>Select batch</label>
       <select id="f-batch">
         <option value="">-- Choose a batch --</option>
-        <option>Batch 1 — 10 May 2025 (9 seats left)</option>
-        <option>Batch 2 — 17 May 2025 (3 seats left)</option>
-        <option>Batch 3 — 24 May 2025 (15 seats left)</option>
-        <option>Batch 4 — 7 Jun 2025 (18 seats left)</option>
+        <option>Batch 1 — Morning (Jan–Feb 2027) — 9:00 AM–1:00 PM — 8 seats left</option>
+        <option>Batch 2 — Afternoon (Jan–Feb 2027) — 2:00–6:00 PM — 5 seats left</option>
+        <option>Batch 3 — Morning (Mar–Apr 2027) — 9:00 AM–1:00 PM — 22 seats left</option>
+        <option>Batch 4 — Afternoon (Mar–Apr 2027) — 2:00–6:00 PM — 28 seats left</option>
       </select>
       <div class="bundle-box">
         <div class="bundle-box-title">What's included in your ₹3,999</div>
@@ -462,9 +497,9 @@ footer strong{color:rgba(255,255,255,0.65);}
           <div style="text-align:right;"><div class="bundle-new">₹3,999</div><div class="bundle-note">one-time fee</div></div>
         </div>
       </div>
-      <button class="btn-primary pay-btn ripple-btn pulse" onclick="handlePay()">Pay ₹3,999 & Confirm My Seat</button>
+      <button class="btn-primary pay-btn ripple-btn pulse" onclick="handlePay()">Confirm Enrollment & Send WhatsApp Message</button>
       <div class="success-banner" id="success-banner">
-        <p>✅ Enrollment confirmed! Pavan Kumar Reddy (+91 9010306890) will contact you within 24 hours with batch details.</p>
+        <p>✅ Opening WhatsApp to send your enrollment details to Pavan Kumar Reddy. If it does not open automatically, message <strong>+91 9010306890</strong> directly.</p>
       </div>
     </div>
   </div>
@@ -488,10 +523,10 @@ const courses=[
   {id:'python',icon:'🐍',color:'#e8f5f0',ic:'#0f6e56',title:'Python for Data',desc:'Python from basics to real data analysis with pandas & numpy',weeks:[{l:'Week 1–2',t:'Python syntax, data types, control flow, functions'},{l:'Week 3–4',t:'NumPy, pandas DataFrames, data cleaning'},{l:'Week 5–6',t:'Visualisation with matplotlib & seaborn'},{l:'Week 7–8',t:'End-to-end real-world data analysis project'}],dur:'8 weekends'},
 ];
 const batches=[
-  {name:'Batch 1',start:'10 May 2025',sched:'Sat & Sun, 9am–1pm',seats:9,total:30},
-  {name:'Batch 2',start:'17 May 2025',sched:'Sat & Sun, 10am–2pm',seats:3,total:30},
-  {name:'Batch 3',start:'24 May 2025',sched:'Sat & Sun, 9am–1pm',seats:15,total:30},
-  {name:'Batch 4',start:'7 Jun 2025',sched:'Sat & Sun, 10am–2pm',seats:18,total:30},
+  {name:'Batch 1 — Morning',start:'4 Jan 2027',end:'21 Feb 2027',sched:'Sat & Sun, 9:00 AM – 1:00 PM',cycle:'Jan–Feb 2027',seats:8,total:30},
+  {name:'Batch 2 — Afternoon',start:'4 Jan 2027',end:'21 Feb 2027',sched:'Sat & Sun, 2:00 PM – 6:00 PM',cycle:'Jan–Feb 2027',seats:5,total:30},
+  {name:'Batch 3 — Morning',start:'6 Mar 2027',end:'25 Apr 2027',sched:'Sat & Sun, 9:00 AM – 1:00 PM',cycle:'Mar–Apr 2027',seats:22,total:30},
+  {name:'Batch 4 — Afternoon',start:'6 Mar 2027',end:'25 Apr 2027',sched:'Sat & Sun, 2:00 PM – 6:00 PM',cycle:'Mar–Apr 2027',seats:28,total:30},
 ];
 const faqs=[
   {q:'Do I get all 5 courses for ₹3,999?',a:'Yes! One payment covers all five — Power BI, SQL, Linux, Data Warehouse, and Python for Data. No hidden charges.'},
@@ -589,12 +624,18 @@ function buildBatches(){
     const cls=b.seats===0?'full':b.seats<6?'warn':'';
     const sc=b.seats===0?'var(--red)':b.seats<6?'var(--accent)':'var(--green)';
     const dis=b.seats===0?'disabled':'';
-    return`<div class="batch-card reveal"><div class="batch-card-top"><div><div class="batch-name">${b.name}</div><div class="batch-date">${b.start}</div></div><strong>₹3,999</strong></div><div class="batch-sched">${b.sched} · All 5 courses</div><div class="seats-row"><div class="seats-bar"><div class="seats-fill ${cls}" style="width:0%" data-pct="${pct}"></div></div><span class="seats-text" style="color:${sc};">${b.seats===0?'Full':b.seats+' seats left'}</span></div><button class="batch-cta ripple-btn" ${dis} onclick="showPage('signup')">${b.seats===0?'Batch Full':'Enroll in this Batch'}</button></div>`;
+    return`<div class="batch-card reveal">
+      <div style="display:inline-block;background:rgba(240,165,0,0.1);color:var(--accent2);font-size:0.68rem;font-weight:600;border-radius:20px;padding:0.2rem 0.7rem;margin-bottom:0.6rem;">${b.cycle}</div>
+      <div class="batch-card-top"><div><div class="batch-name">${b.name}</div><div class="batch-date">Starts ${b.start} · Ends ${b.end}</div></div><strong>₹3,999</strong></div>
+      <div class="batch-sched">${b.sched} · 8 weekends · All 5 courses</div>
+      <div class="seats-row"><div class="seats-bar"><div class="seats-fill ${cls}" style="width:0%" data-pct="${pct}"></div></div><span class="seats-text" style="color:${sc};">${b.seats===0?'Full':b.seats+' seats left'}</span></div>
+      <button class="batch-cta ripple-btn" ${dis} onclick="showPage('signup')">${b.seats===0?'Batch Full':'Enroll in this Batch'}</button>
+    </div>`;
   }).join('');
   document.getElementById('batch-tbody').innerHTML=batches.map(b=>{
     const filled=b.total-b.seats,pct=Math.round(filled/b.total*100);
     const cls=b.seats===0?'full':b.seats<6?'warn':'';const sc=b.seats===0?'var(--red)':b.seats<6?'var(--accent)':'var(--green)';const dis=b.seats===0?'disabled':'';
-    return`<tr><td><strong>${b.name}</strong></td><td>${b.start}</td><td style="font-size:0.8rem;color:var(--muted);">${b.sched}</td><td><div style="display:flex;align-items:center;gap:7px;"><div class="seats-bar" style="width:72px;flex:none;"><div class="seats-fill ${cls}" style="width:${pct}%"></div></div><span style="font-size:0.79rem;color:${sc};">${b.seats===0?'Full':b.seats+' left'}</span></div></td><td style="font-size:0.78rem;color:var(--muted);">All 5 courses</td><td><strong>₹3,999</strong></td><td><button class="enroll-mini ripple-btn" ${dis} onclick="showPage('signup')">${b.seats===0?'Full':'Enroll'}</button></td></tr>`;
+    return`<tr><td><strong>${b.name}</strong><div style="font-size:0.72rem;color:var(--muted);">${b.cycle}</div></td><td>${b.start}<div style="font-size:0.72rem;color:var(--muted);">to ${b.end}</div></td><td style="font-size:0.8rem;color:var(--muted);">${b.sched}</td><td><div style="display:flex;align-items:center;gap:7px;"><div class="seats-bar" style="width:72px;flex:none;"><div class="seats-fill ${cls}" style="width:${pct}%"></div></div><span style="font-size:0.79rem;color:${sc};">${b.seats===0?'Full':b.seats+' left'}</span></div></td><td style="font-size:0.78rem;color:var(--muted);">All 5 courses</td><td><strong>₹3,999</strong></td><td><button class="enroll-mini ripple-btn" ${dis} onclick="showPage('signup')">${b.seats===0?'Full':'Enroll'}</button></td></tr>`;
   }).join('');
 }
 
@@ -613,8 +654,45 @@ function showPage(name){
 function handlePay(){
   const n=document.getElementById('f-name').value.trim(),e=document.getElementById('f-email').value.trim(),p=document.getElementById('f-phone').value.trim(),b=document.getElementById('f-batch').value;
   if(!n||!e||!p||!b){alert('Please fill in all fields to proceed.');return;}
+  // Build WhatsApp message
+  const msg=`Hi Pavan Kumar Reddy, I would like to enroll in DataLearn.
+
+Name: ${n}
+Phone: ${p}
+Email: ${e}
+Batch: ${b}
+
+Please confirm my seat. Thank you!`;
+  const waUrl='https://wa.me/919010306890?text='+encodeURIComponent(msg);
+  // Show success banner
   document.getElementById('success-banner').style.display='block';
-  const btn=document.querySelector('.pay-btn');btn.disabled=true;btn.textContent='🎉 Seat Confirmed!';btn.style.background='var(--green)';btn.classList.remove('pulse');
+  const btn=document.querySelector('.pay-btn');
+  btn.disabled=true;btn.textContent='🎉 Redirecting to WhatsApp...';btn.style.background='var(--green)';btn.classList.remove('pulse');
+  // Open WhatsApp after short delay so user sees confirmation
+  setTimeout(()=>window.open(waUrl,'_blank'),800);
+}
+let selectedStars=0;
+function setStar(val){
+  selectedStars=val;
+  document.querySelectorAll('.star-opt').forEach((s,i)=>{
+    s.classList.toggle('active',i<val);
+  });
+}
+function submitReview(){
+  const name=document.getElementById('rev-name').value.trim();
+  const text=document.getElementById('rev-text').value.trim();
+  if(!name||!text||selectedStars===0){alert('Please enter your name, a review, and select a rating.');return;}
+  const stars='★'.repeat(selectedStars)+'☆'.repeat(5-selectedStars);
+  const card=document.createElement('div');
+  card.className='testi-card user-review';
+  card.innerHTML=`<div class="stars">${stars}</div><div class="testi-text">"${text}"</div><div class="testi-name">${name} — Just now</div>`;
+  document.getElementById('testi-grid').insertBefore(card,document.getElementById('testi-grid').firstChild);
+  document.getElementById('rev-success').style.display='block';
+  document.getElementById('rev-name').value='';
+  document.getElementById('rev-text').value='';
+  selectedStars=0;
+  document.querySelectorAll('.star-opt').forEach(s=>s.classList.remove('active'));
+  setTimeout(()=>document.getElementById('rev-success').style.display='none',3000);
 }
 buildCourses();buildBatches();buildFAQ();
 setTimeout(initReveal,150);
